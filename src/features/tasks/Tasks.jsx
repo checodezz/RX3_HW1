@@ -1,31 +1,38 @@
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { toggleTaskStatus } from "./taskSlice";
+import { toggleTaskStatus, fetchTasks } from "./taskSlice";
+import { useEffect } from "react";
+
 const TaskList = () => {
   const dispatch = useDispatch();
-  const taskData = useSelector((state) => state.tasks.taskData);
+  const taskData = useSelector((state) => state?.tasks?.taskData?.tasks);
+  console.log(taskData);
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, []);
 
-  const handleStatusButtonClick = (dayId, taskIndex) => {
-    dispatch(toggleTaskStatus({ dayId, taskIndex }));
+  const handleStatusButtonClick = (dayIndex, taskId) => {
+    dispatch(toggleTaskStatus({ dayIndex, taskId }));
   };
   return (
     <div>
-      {taskData.map((day) => (
-        <div key={day.id}>
-          <h2>{day.date}</h2>
+      {taskData?.map((task, index) => (
+        <div key={index}>
+          <h2>{task?.date}</h2>
+
           <ul>
-            {day.tasks.map((task, index) => (
-              <div key={index}>
-                <li key={index}>
-                  <span>{task.taskName}.</span>{" "}
+            {task.tasks.map((task) => (
+              <>
+                <li key={task.taskId}>
+                  {task.task}{" "}
                   <button
-                    onClick={() => handleStatusButtonClick(day.id, index)}
+                    onClick={() => handleStatusButtonClick(index, task.taskId)}
                   >
-                    {task.status}
+                    {task.taskStatus}
                   </button>
                 </li>
                 <br />
-              </div>
+              </>
             ))}
           </ul>
         </div>
