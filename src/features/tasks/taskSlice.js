@@ -36,7 +36,21 @@ export const taskSlice = createSlice({
             }
         ]
     },
-    reducers: {}
+    reducers: {
+        toggleTaskStatus: (state, action) => {
+            const { dayId, taskIndex } = action.payload;
+            const day = state.taskData.find(day => day.id === dayId);
+
+            if (day) {
+                const task = day.tasks[taskIndex];
+                if (task) {
+                    task.status = task.status === "Completed" ? "Pending" : "Completed"
+                }
+            }
+        }
+    }
 })
 
+
+export const { toggleTaskStatus } = taskSlice.actions;
 export default taskSlice.reducer
